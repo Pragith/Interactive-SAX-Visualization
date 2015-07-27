@@ -13,7 +13,7 @@ shinyServer(function(input, output) {
   #breakpoints = breakpoints.generate()
   
   res = reactive({
-    result = do.sax(paste(input$dataset,".dat",sep=""), input$wlen, input$nsyms, input$asize)
+    result = do.sax(paste("data/",input$dataset,".dat",sep=""), input$wlen, input$nsyms, input$asize)
     return(result)
   })
   
