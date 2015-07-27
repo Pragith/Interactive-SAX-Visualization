@@ -1,27 +1,4 @@
 library(dygraphs)
-#
-#
-# 
-# Input:
-#   Sliders:
-#         
-# 
-# 
-# Output:
-#   G1 - Plot the Actual dataset graph
-#   G2 - Plot the Normalized graph
-#   G3 - Plot the PAA step graph
-#   G4 - Superimposed PAA and Normalized graph
-#   Subsequence Tree table (Patternized)
-# 
-# 
-# 
-
-
-
-
-
-
 library(shiny)
 
 shinyUI(fluidPage(
@@ -29,7 +6,7 @@ shinyUI(fluidPage(
   # Application title
   titlePanel("Interactive SAX Visualization"),
 
-  # Sidebar with a slider input for number of bins
+  # Sidebar with a inputs
   sidebarLayout(
     sidebarPanel(
       
@@ -55,11 +32,6 @@ shinyUI(fluidPage(
                     "Alphabet Size (a,b,c,d...):",
                     value = 4)
       
-#       ,sliderInput("bins",
-#                   "Number of bins:",
-#                   min = 1,
-#                   max = 50,
-#                   value = 30)
       ,tableOutput("pattern_table")
     ),
 

@@ -85,29 +85,37 @@ normalize = function(val,m,s){  return ((val-m)/s)  }
 
 ###############################################################################
 
-### Function - plot.graphs 
+### Function - plot.gN
 ###   Params: x (data), wlen
 ###   Returns: g1,g2,g3,g4
-plot.graphs = function(x, wlen){
+plot.g1 = function(x, wlen, choice){
+    #   G1 - Plot the Actual dataset graph
+    g1.data = ts(get.list.values(x$data, wlen), start = c(1,100000))
+    g1 <<- dygraph(g1.data, main="Original Dataset", group="anomaly_graph") %>% dyRangeSelector()
+    g1
+}
 
-  #   G1 - Plot the Actual dataset graph
-  g1.data = ts(get.list.values(x$data, wlen), start = c(1,100000))
-  g1 <<- dygraph(g1.data, main="Original Dataset", group="anomaly_graph") %>% dyRangeSelector()
+plot.g2 = function(x, wlen, choice){
+    #   G2 - Plot the Normalized graph
+    g2.data = ts(get.list.values(x$norm, wlen), start = c(1,100000))
+    g2 <<- dygraph(g2.data, main="Normalized Dataset", group="anomaly_graph") %>% dyRangeSelector()
+    g2
+}
+
+plot.g3 = function(x, wlen, choice){
+    #   G3 - Plot the PAA step graph
+    g3.data = ts(get.list.values(x$paa, wlen), start = c(1,100000))
+    g3 <<- dygraph(g3.data, main="PAA Step Graph") %>% dyOptions(stepPlot = TRUE) %>% dyRangeSelector()
+    g3
+}
   
-  #   G2 - Plot the Normalized graph
-  g2.data = ts(get.list.values(x$norm, wlen), start = c(1,100000))
-  g2 <<- dygraph(g2.data, main="Normalized Dataset", group="anomaly_graph") %>% dyRangeSelector()
-  
-  #   G3 - Plot the PAA step graph
-  g3.data = ts(get.list.values(x$paa, wlen), start = c(1,100000))
-  g3 <<- dygraph(g3.data, main="PAA Step Graph") %>% dyOptions(stepPlot = TRUE) %>% dyRangeSelector()
-  
-  #   G4 - Superimposed PAA and Normalized graph
-  d1 = ts(get.list.values(x$norm, wlen)[1:length(get.list.values(x$scaled_paa,wlen))], start = c(1,100000))
-  d2 = ts(get.list.values(x$scaled_paa, wlen), start = c(1,100000))
-  g4.data = cbind(as.xts(d1),as.xts(d2))
-  g4 <<- dygraph(g4.data, main="Superimposed PAA on Normalized graph", group="anomaly_graph") %>% dyRangeSelector()
-  
+plot.g4 = function(x, wlen, choice){
+    #   G4 - Superimposed PAA and Normalized graph
+    d1 = ts(get.list.values(x$norm, wlen)[1:length(get.list.values(x$scaled_paa,wlen))], start = c(1,100000))
+    d2 = ts(get.list.values(x$scaled_paa, wlen), start = c(1,100000))
+    g4.data = cbind(as.xts(d1),as.xts(d2))
+    g4 <<- dygraph(g4.data, main="Superimposed PAA on Normalized graph", group="anomaly_graph") %>% dyRangeSelector()
+    g4
 }
 
 ###############################################################################

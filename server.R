@@ -10,7 +10,6 @@ library(xts)
 shinyServer(function(input, output) {
   
   source("Functions.R")
-  #breakpoints = breakpoints.generate()
   
   res = reactive({
     result = do.sax(paste("data/",input$dataset,".dat",sep=""), input$wlen, input$nsyms, input$asize)
@@ -21,13 +20,14 @@ shinyServer(function(input, output) {
     pattern = patternize(res())
   })
 
-  graph.params = reactive({
-    plot.graphs(res(), nrow(res()))
-  })
+  g1 = reactive({ plot.g1(res(), nrow(res())) })
+  g2 = reactive({ plot.g2(res(), nrow(res())) })
+  g3 = reactive({ plot.g3(res(), nrow(res())) })
+  g4 = reactive({ plot.g4(res(), nrow(res())) })
   
-  output$g1_graph <- renderDygraph({  graph.params();    g1  })
-  output$g2_graph <- renderDygraph({  graph.params();    g2  })
-  output$g3_graph <- renderDygraph({  graph.params();    g3  })
-  output$g4_graph <- renderDygraph({  graph.params();    g4  })
+  output$g1_graph <- renderDygraph({  g1()  })
+  output$g2_graph <- renderDygraph({  g2()  })
+  output$g3_graph <- renderDygraph({  g3()  })
+  output$g4_graph <- renderDygraph({  g4()  })
 
 })
