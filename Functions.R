@@ -1,14 +1,14 @@
 ###############################################################################
 
 ### Function - do.sax 
-###   Params: data (only filename), nsyms, wlen, asize
+###   Params: data (only filename), wlen, nsyms, asize
 ###   Returns: window.data
 ###   Example: do.sax("h_test.dat", 250, 4, 4)
-do.sax = function(data,wlen, asize, nsyms){
+do.sax = function(data,wlen, nsyms, asize){
   data = read.csv(data)
   windows = as.integer(nrow(data)/wlen)+1
   window.data = array(list(), dim=c(windows,7))
-  q = (qnorm(seq(0, 1, 1/asize))) 
+  q = (qnorm(seq(0, 1, 1/asize))) ##  To calculate breakpoints based on asize
   
   for (i in 1:windows){
     
@@ -37,9 +37,6 @@ do.sax = function(data,wlen, asize, nsyms){
     ##  Push normalized values to window.data
     d$norm = sapply(d$value,function(x){ normalize(x,m,s) })
     window.data[[i,4]] = sapply(d$value,function(x){ normalize(x,m,s) })
-    
-    ####  TEMP
-    # d %>% ggvis(~1:length(norm),~norm) %>% layer_lines()
     
     ##  Get Piecewise Aggregate Approximation (PAA)
     PAA = array(0, nsyms)
@@ -115,20 +112,16 @@ plot.graphs = function(x, wlen){
 
 ###############################################################################
 
-### Generic functions
+### Function - pos 
+###   Params: Send the qnorm values
+###   Returns: Position of the breakpoint where it belongs
+pos = function(t, v) {  which.max(v[v <= t])  }
 
-get.dates = function(len){
-  return(as.POSIXct(as.Date("2015-07-01") + 1:len, origin="1970-01-01"))
-}
+###############################################################################
 
-get.list.values = function(data, wlen){
-  l <<- list()
-  for (i in 1:wlen){
-    l <<- c(l,data[[i]])
-  }
-  return (as.numeric(l))
-}
-
+### Function - scaled.paa 
+###   Params: paa_values, length of original dataset
+###   Returns: Repeated paa_values into equi-length of dataset
 scaled.paa = function(paa, data.length){
   paa.len = nrow(paa)
   x = list()
@@ -141,48 +134,17 @@ scaled.paa = function(paa, data.length){
   return (x)
 }
 
-# breakpoints.generate = function(){
-#   breakpoints = data.frame(syms = 3:20)
-#   
-#   qvals = lapply(breakpoints$syms, function(x){ 
-#     q = round(qnorm(seq(0, 1, 1/x)),2)
-#     q = q[-c(1,length(q))]
-#     if (q%%2 == 0) { q[length(q)+1] = 0 }
-#     sort(q)
-#   })
-#   qvals = lapply(qvals, unique)
-# #   l = lapply(breakpoints$syms, function(x){
-# #     letters[1:x]
-# #   })
-# 
-#   breakpoints$qvals = qvals
-#   #breakpoints$alphabets = l
-#   return(breakpoints)
-# }
-
-pos <- function(t, v) {
-  which.max(v[v <= t])
-}
-
 ###############################################################################
 
-# ### Function - paa.to.data 
-# ###   Params: PAA_values, original_data
-# ###   Returns: PAA value nsyms times
-# paa.to.data = function(paa, data){
-#   paa.len = nrow(paa.complete)
-#   data.len = nrow(data)
-#   x = data.frame()
-#   
-#   for(i in 1:paa.len){
-#     x = rbind(x,list(rep(paa.complete[i,], as.integer(data.len/paa.len))))
-#   }
-#   
-#   colnames(x) = "paa_values"
-#   
-#   data$paa_values = 0
-#   data$paa_values[1:nrow(x)] = x$paa_values
-#   
-# }
+### Function - get.list.values
+###   Params: data, wlen
+###   Returns: Unset list values for plotting
+get.list.values = function(data, wlen){
+  l <<- list()
+  for (i in 1:wlen){
+    l <<- c(l,data[[i]])
+  }
+  return (as.numeric(l))
+}
 
 ###############################################################################
